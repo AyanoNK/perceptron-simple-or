@@ -1,17 +1,17 @@
-function Perceptron(opts) {
-  if (!opts) opts = {};
+function Perceptron(customOptions) {
+  if (!customOptions) customOptions = {};
 
-  var debug = "debug" in opts ? opts.debug : false;
+  var debug = "debug" in customOptions ? customOptions.debug : true;
 
-  var weights = "weights" in opts ? opts.weights.slice() : [];
+  var weights = "weights" in customOptions ? customOptions.weights.slice() : [];
 
-  var threshold = "threshold" in opts ? opts.threshold : 1;
+  var threshold = "threshold" in customOptions ? customOptions.threshold : 1;
 
   var learningrate;
-  if (!("learningrate" in opts)) {
+  if (!("learningrate" in customOptions)) {
     learningrate = 0.1;
   } else {
-    learningrate = opts.learningrate;
+    learningrate = customOptions.learningrate;
   }
 
   var data = [];
@@ -22,6 +22,7 @@ function Perceptron(opts) {
       var length = data.length;
       var success = true;
       for (var i = 0; i < length; i++) {
+        // The shift() method removes the first element from an array and returns it.
         var training = data.shift();
         success = api.train(training.input, training.target) && success;
       }
@@ -29,11 +30,12 @@ function Perceptron(opts) {
     },
     train: function (inputs, expected) {
       while (weights.length < inputs.length) {
+        // given a number
         weights.push(Math.random());
       }
       // add a bias weight for the threshold
       if (weights.length === inputs.length) {
-        weights.push("bias" in opts ? opts.bias : 1);
+        weights.push("bias" in customOptions ? customOptions.bias : 1);
       }
 
       var result = api.perceive(inputs);
@@ -50,7 +52,7 @@ function Perceptron(opts) {
       if (result === expected) {
         return true;
       } else {
-        if (debug) console.log("> adjusting weights...", weights, inputs);
+        if (debug) console.log(">> adjusting weights...", weights, inputs);
         for (var i = 0; i < weights.length; i++) {
           var input = i === inputs.length ? threshold : inputs[i];
           api.adjust(result, expected, input, i);
@@ -97,6 +99,7 @@ function Perceptron(opts) {
     },
 
     sigmoid: function (t) {
+      // Math.E is Euler
       return 1 / (1 + Math.pow(Math.E, -t));
     },
 
@@ -116,7 +119,7 @@ const train = () => {
   or.train([1, 0], 1);
   or.train([1, 1], 1);
 
-  // practice makes perfect (we hope...)
+  // training
   var i = 0;
   while (i++ < 10000 && !or.retrain()) {}
 

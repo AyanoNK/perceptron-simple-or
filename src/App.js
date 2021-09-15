@@ -1,12 +1,9 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { evaluate } from "./utils/utils";
 import {
   makeStyles,
   createStyles,
   Box,
-  FormControlLabel,
-  Checkbox,
   TextField,
   Button,
   Typography,
